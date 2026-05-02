@@ -7,36 +7,90 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Header -->
-    <div class="header">
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">TutorCard <span>HK</span></a>
+            <div class="nav-links">
+                <a href="index.html" class="active">搵導師</a>
+                <a href="become-tutor.html">成為導師</a>
+            </div>
+        </div>
+    </nav>
+    <!-- Hero Banner -->
+    <div class="hero">
         <h1>搵補習老師，先睇真正成績</h1>
-        <p>所有導師均為DSE畢業生或大學生，成績單親眼認證</p>
+        <p>香港學生專屬 · 全部導師均為DSE畢業生或大學生</p>
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <span class="number" id="stat-tutors">--</span>
+                <span class="label">已登記導師</span>
+            </div>
+            <div class="hero-stat">
+                <span class="number">✅</span>
+                <span class="label">成績認證</span>
+            </div>
+            <div class="hero-stat">
+                <span class="number">📞</span>
+                <span class="label">直接聯絡</span>
+            </div>
+        </div>
     </div>
 
     <!-- Search Bar (visual only for now, will work later) -->
-    <!-- Search Bar -->
-    <div class="search-bar">
-        <input type="text" id="search-text" placeholder="搜尋科目：英文、數學、化學..." oninput="filterTutors()">
-        <select id="filter-level" onchange="filterTutors()">
-            <option value="">所有級別</option>
-            <option value="P.1-P.3">小一至小三</option>
-            <option value="P.4-P.6">小四至小六</option>
-            <option value="F.1-F.3">中一至中三</option>
-            <option value="F.4-F.6">中四至中六</option>
-        </select>
-        <select id="filter-price" onchange="filterTutors()">
-            <option value="">最高價錢</option>
-            <option value="100">$100/hr</option>
-            <option value="150">$150/hr</option>
-            <option value="200">$200/hr</option>
-            <option value="250">$250/hr</option>
-            <option value="300">$300/hr</option>
-        </select>
+    <!-- Search Section -->
+    <div class="search-section">
+        <div class="search-card">
+            <div class="search-card-label">搜尋導師</div>
+            <div class="search-bar">
+                <input type="text" id="search-text" placeholder="搜尋科目、大學、中學..." oninput="filterTutors()">
+                <select id="filter-level" onchange="filterTutors()">
+                    <option value="">所有級別</option>
+                    <option value="P.1-P.3">小一至小三</option>
+                    <option value="P.4-P.6">小四至小六</option>
+                    <option value="F.1-F.3">中一至中三</option>
+                    <option value="F.4-F.6">中四至中六</option>
+                </select>
+                <select id="filter-price" onchange="filterTutors()">
+                    <option value="">最高價錢</option>
+                    <option value="100">$100/hr</option>
+                    <option value="150">$150/hr</option>
+                    <option value="200">$200/hr</option>
+                    <option value="250">$250/hr</option>
+                    <option value="300">$300/hr</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Header -->
+    <div class="results-header">
+        <span class="results-count" id="results-count"></span>
     </div>
     
     <!-- Tutor List (JavaScript fills this in) -->
     <div class="tutor-list" id="tutor-list"></div>
-    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <h4>TutorCard HK</h4>
+                <p>香港學生專屬補習配對平台。<br>所有導師均為DSE畢業生或大學生。</p>
+            </div>
+            <div class="footer-col">
+                <h4>連結</h4>
+                <a href="index.html">搵導師</a>
+                <a href="become-tutor.html">成為導師</a>
+            </div>
+            <div class="footer-col">
+                <h4>聯絡</h4>
+                <p>📧 hello@tutorcard.hk</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 TutorCard HK. 此平台只作導師配對用途，所有補習安排由雙方自行商討。</p>
+        </div>
+    </footer>
     <script src="script.js"></script>
 
 </body>
