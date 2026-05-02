@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TutorCard HK - 導師卡</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1>搵補習老師，先睇真正成績</h1>
+        <p>所有導師均為DSE畢業生或大學生，成績單親眼認證</p>
+    </div>
+
+    <!-- Search Bar (visual only for now, will work later) -->
+    <!-- Search Bar -->
+    <div class="search-bar">
+        <input type="text" id="search-text" placeholder="搜尋科目：英文、數學、化學..." oninput="filterTutors()">
+        <select id="filter-level" onchange="filterTutors()">
+            <option value="">所有級別</option>
+            <option value="P.1-P.3">小一至小三</option>
+            <option value="P.4-P.6">小四至小六</option>
+            <option value="F.1-F.3">中一至中三</option>
+            <option value="F.4-F.6">中四至中六</option>
+        </select>
+        <select id="filter-price" onchange="filterTutors()">
+            <option value="">最高價錢</option>
+            <option value="100">$100/hr</option>
+            <option value="150">$150/hr</option>
+            <option value="200">$200/hr</option>
+            <option value="250">$250/hr</option>
+            <option value="300">$300/hr</option>
+        </select>
+    </div>
+    
+    <!-- Tutor List (JavaScript fills this in) -->
+    <div class="tutor-list" id="tutor-list"></div>
+    
+    <script src="script.js"></script>
+
+</body>
+</html>
