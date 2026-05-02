@@ -3,7 +3,7 @@
 // ==========================================
 // To add a new tutor, just copy one of these blocks and change the details.
 // Everything between { } is one tutor.
-
+const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQfhG2yFt-dbJDCTJN149fMRC8NPA38DO_-tkLI_F4QCFdEbBgGTbtT7xeQ1nRQ8EIawNIOQhc4b8DI/pub?gid=812051001&single=true&output=csv'
 const tutors = [
     {
         id: 1,
@@ -71,6 +71,121 @@ const tutors = [
     }
 ];
 
+// ==========================================
+// FUNCTION: Fetch Tutors from Google Sheets
+// ==========================================
+async function fetchSheetTutors() {
+    try {
+        const response = await fetch(SHEET_URL);
+        const csvText = await response.text();
+        
+        // Parse CSV into rows
+        const rows = csvText.split('\n');
+        // Remove header row
+        const dataRows = rows.slice(1);
+        
+        const sheetTutors = [];
+        
+        for (let row of dataRows) {
+            if (row.trim() === '') continue; // Skip empty rows
+            
+            // Split by comma, but handle commas inside quotes
+            const cols = parseCSVRow(row);
+            
+            // Column mapping (matches your Google Form order):
+            // 0: Timestamp (auto)
+            // 1: 姓名
+            // 2: WhatsApp
+            // 3: 大學
+            // 4: 主修
+            // 5: 年級
+            // 6: 中學
+            // 7: 簡介
+            // 8-16: DSE grades
+            // 17-19: Subjects offered
+            
+            // Build grades array (only include subjects with actual grades)
+            const gradeSubjects = [
+                { col: 8,  name: 'English' },
+                { col: 9,  name: 'Maths' },
+                { col: 10, name: 'M2' },
+                { col: 11, name: 'Chinese' },
+                { col: 12, name: 'Chemistry' },
+                { col: 13, name: 'Biology' },
+                { col: 14, name: 'Physics' },
+                { col: 15, name: 'Economics' },
+                { col: 16, name: 'Chinese History' }
+            ];
+            
+            const grades = [];
+            for (let g of gradeSubjects) {
+                const gradeValue = cols[g.col] ? cols[g.col].trim() : '';
+                if (gradeValue !== '' && gradeValue !== '未有此科') {
+                    grades.push({ subject: g.name, grade: gradeValue });
+                }
+            }
+            
+            // Build subjects offered
+            const subjectsOffered = [];
+            for (let i = 17; i <= 19; i++) {
+                if (cols[i] && cols[i].trim() !== '') {
+                    const parts = cols[i].split(',');
+                    if (parts.length >= 3) {
+                        subjectsOffered.push({
+                            subject: parts[0].trim(),
+                            level: parts[1].trim(),
+                            price: parseInt(parts[2].trim())
+                        });
+                    }
+                }
+            }
+            
+            // Create tutor object
+            const tutor = {
+                id: 'sheet-' + sheetTutors.length,
+                name: cols[1] ? cols[1].trim() : 'Unknown',
+                verified: false, // Google Form entries are unverified by default
+                university: cols[3] ? cols[3].trim() : '',
+                major: cols[4] ? cols[4].trim() : '',
+                year: cols[5] ? cols[5].trim() : '',
+                secondarySchool: cols[6] ? cols[6].trim() : '',
+                grades: grades,
+                subjectsOffered: subjectsOffered,
+                bio: cols[7] ? cols[7].trim() : '',
+                phone: cols[2] ? cols[2].trim() : ''
+            };
+            
+            sheetTutors.push(tutor);
+        }
+        
+        return sheetTutors;
+    } catch (error) {
+        console.log('Could not fetch sheet tutors:', error);
+        return []; // Return empty array if fetch fails
+    }
+}
+
+// ==========================================
+// HELPER FUNCTION: Parse CSV Row (handles quotes)
+// ==========================================
+function parseCSVRow(row) {
+    const result = [];
+    let current = '';
+    let inQuotes = false;
+    
+    for (let char of row) {
+        if (char === '"') {
+            inQuotes = !inQuotes;
+        } else if (char === ',' && !inQuotes) {
+            result.push(current);
+            current = '';
+        } else {
+            current += char;
+        }
+    }
+    result.push(current);
+    return result;
+}
 // ==========================================
 // FUNCTION: Show Contact Number
 // ==========================================
@@ -171,7 +286,8 @@ function filterTutors() {
     };
 
     // Filter the tutors array
-    let filtered = tutors.filter(function(tutor) {
+    const sourceTutors = window.allTutors || tutors;
+    let filtered = sourceTutors.filter(function(tutor) {
         // Check if search text matches
         let matchesSearch = true;
         if (searchText !== '') {
@@ -262,4 +378,14 @@ function filterTutors() {
 // ==========================================
 // RUN ON PAGE LOAD
 // ==========================================
-displayTutors(tutors);
+// ==========================================
+// RUN ON PAGE LOAD (Combine both sources)
+// ==========================================
+async function loadAllTutors() {
+    const sheetTutors = await fetchSheetTutors();
+    const allTutors = tutors.concat(sheetTutors); // Combine static + sheet tutors
+    window.allTutors = allTutors; // Store globally for filtering
+    displayTutors(allTutors);
+}
+
+loadAllTutors();
