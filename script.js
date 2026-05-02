@@ -4,72 +4,7 @@
 // To add a new tutor, just copy one of these blocks and change the details.
 // Everything between { } is one tutor.
 const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQfhG2yFt-dbJDCTJN149fMRC8NPA38DO_-tkLI_F4QCFdEbBgGTbtT7xeQ1nRQ8EIawNIOQhc4b8DI/pub?gid=812051001&single=true&output=csv'
-const tutors = [
-    {
-        id: 1,
-        name: "陳小明",
-        verified: true,
-        university: "香港大學",
-        major: "醫學系",
-        year: "Year 2",
-        secondarySchool: "皇仁書院",
-        grades: [
-            { subject: "English", grade: "5**" },
-            { subject: "Maths", grade: "5*" },
-            { subject: "Chemistry", grade: "5*" },
-            { subject: "Biology", grade: "5" }
-        ],
-        subjectsOffered: [
-            { subject: "English", level: "F.4-F.6", price: 200 },
-            { subject: "English", level: "F.1-F.3", price: 160 },
-            { subject: "Biology", level: "F.4-F.6", price: 180 }
-        ],
-        bio: "兩年補習經驗，專攻DSE英文作文及閱讀理解。提供自製筆記及練習。",
-        phone: "61234567"
-    },
-    {
-        id: 2,
-        name: "張家希",
-        verified: false,
-        university: "香港科技大學",
-        major: "工程系",
-        year: "Year 3",
-        secondarySchool: "喇沙書院",
-        grades: [
-            { subject: "Maths", grade: "5*" },
-            { subject: "M2", grade: "5*" },
-            { subject: "Physics", grade: "5" }
-        ],
-        subjectsOffered: [
-            { subject: "Maths", level: "F.4-F.6", price: 180 },
-            { subject: "Maths", level: "P.5-P.6", price: 140 },
-            { subject: "M2", level: "F.4-F.6", price: 200 }
-        ],
-        bio: "擅長講解抽象數學概念，幫助學生由淺入深理解M2微積分。",
-        phone: "69876543"
-    },
-    {
-        id: 3,
-        name: "李詠詩",
-        verified: true,
-        university: "香港中文大學",
-        major: "中文系",
-        year: "Year 1",
-        secondarySchool: "聖保祿學校",
-        grades: [
-            { subject: "Chinese", grade: "5**" },
-            { subject: "Chinese History", grade: "5*" },
-            { subject: "English", grade: "5" }
-        ],
-        subjectsOffered: [
-            { subject: "Chinese", level: "F.4-F.6", price: 180 },
-            { subject: "Chinese", level: "P.5-P.6", price: 130 },
-            { subject: "Chinese History", level: "F.4-F.6", price: 170 }
-        ],
-        bio: "2025 DSE中文5**，熟讀十二篇指定文言篇章，提供星級範文分析。",
-        phone: "65551234"
-    }
-];
+const tutors = [];
 
 // ==========================================
 // FUNCTION: Fetch Tutors from Google Sheets
