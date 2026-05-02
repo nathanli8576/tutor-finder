@@ -131,53 +131,85 @@ function revealContact(phoneNumber, buttonElement) {
 // ==========================================
 // FUNCTION: Create One Tutor Card (HTML)
 // ==========================================
+// ==========================================
+// FUNCTION: Create One Tutor Card (Improved)
+// ==========================================
 function createTutorCard(tutor) {
-    // Build the verified badge if needed
-    let verifiedBadge = '';
+    // Verified or unverified badge
+    let statusBadge = '';
     if (tutor.verified) {
-        verifiedBadge = '<span class="verified">✅ 成績認證</span>';
+        statusBadge = '<span class="verified">✅ 成績認證</span>';
+    } else {
+        statusBadge = '<span class="unverified">⏳ 未認證</span>';
     }
 
-    // Build the grade tags
+    // Build grade tags — highlight 5** and 5* with a special class
     let gradeTags = '';
     for (let g of tutor.grades) {
-        gradeTags += '<span class="grade-tag">' + g.subject + ' ' + g.grade + '</span>';
+        let starClass = (g.grade === '5**' || g.grade === '5*') ? ' star' : '';
+        gradeTags += '<span class="grade-tag' + starClass + '">' + g.subject + ' ' + g.grade + '</span>';
     }
 
-    // Build the subjects/prices text
-    let subjectsText = '';
+    // Build price rows
+    let priceRows = '';
     for (let s of tutor.subjectsOffered) {
-        subjectsText += s.subject + ' (' + s.level + ') $' + s.price + '/hr<br>';
+        priceRows += '<div class="price-row"><span>📚 ' + s.subject + ' (' + s.level + ')</span><span class="amount">$' + s.price + '/hr</span></div>';
     }
 
-    // Put the whole card together
+    // School line — handle DSE grads
+    let schoolLine = '';
+    if (tutor.university === '剛考DSE') {
+        schoolLine = '🎓 2025 DSE 考生 | 🏫 ' + tutor.secondarySchool;
+    } else {
+        schoolLine = '🎓 ' + tutor.university + ' · ' + tutor.major + ' ' + tutor.year + ' | 🏫 ' + tutor.secondarySchool;
+    }
+
+    // Build the card
     let cardHTML = `
-        <div class="tutor-card" 
-             data-name="${tutor.name.toLowerCase()}" 
-             data-subjects="${tutor.subjectsOffered.map(s => s.subject.toLowerCase()).join(',')}" 
-             data-levels="${tutor.subjectsOffered.map(s => s.level.toLowerCase()).join(',')}" 
-             data-price="${Math.min(...tutor.subjectsOffered.map(s => s.price))}">
-            <h3>${tutor.name} ${verifiedBadge}</h3>
-            <p class="school">🎓 ${tutor.university} · ${tutor.major} ${tutor.year} | 🏫 ${tutor.secondarySchool}</p>
+        <div class="tutor-card">
+            <div class="tutor-card-header">
+                <h3>${tutor.name} ${statusBadge}</h3>
+            </div>
+            <p class="school">${schoolLine}</p>
             <div class="grades">${gradeTags}</div>
-            <p class="price">💰 ${subjectsText}</p>
+            <div class="price-block">${priceRows}</div>
             <p class="bio">${tutor.bio}</p>
-            <button class="contact-btn" onclick="revealContact('${tutor.phone}', this)">📞 顯示聯絡方式</button>
+            <div class="card-actions">
+                <button class="contact-btn" onclick="revealContact('${tutor.phone}', this)">📞 顯示聯絡方式</button>
+            </div>
         </div>
     `;
 
     return cardHTML;
 }
-
+// ==========================================
+// FUNCTION: Display All Tutors
+// ==========================================
 // ==========================================
 // FUNCTION: Display All Tutors
 // ==========================================
 function displayTutors(tutorArray) {
     const container = document.getElementById('tutor-list');
-    container.innerHTML = ''; // Clear existing cards
+    const resultsCount = document.getElementById('results-count');
+    
+    container.innerHTML = '';
 
-    for (let tutor of tutorArray) {
-        container.innerHTML += createTutorCard(tutor);
+    if (tutorArray.length === 0) {
+        container.innerHTML = `
+            <div class="no-results">
+                <div class="icon">🔍</div>
+                <h3>找不到符合條件的導師</h3>
+                <p>試試放寬搜尋條件</p>
+            </div>
+        `;
+        if (resultsCount) resultsCount.textContent = '';
+    } else {
+        for (let tutor of tutorArray) {
+            container.innerHTML += createTutorCard(tutor);
+        }
+        if (resultsCount) {
+            resultsCount.textContent = '顯示 ' + tutorArray.length + ' 位導師';
+        }
     }
 }
 
@@ -316,10 +348,20 @@ function filterTutors() {
 // ==========================================
 // RUN ON PAGE LOAD (Combine both sources)
 // ==========================================
+// ==========================================
+// RUN ON PAGE LOAD (Combine both sources)
+// ==========================================
 async function loadAllTutors() {
     const sheetTutors = await fetchSheetTutors();
-    const allTutors = tutors.concat(sheetTutors); // Combine static + sheet tutors
-    window.allTutors = allTutors; // Store globally for filtering
+    const allTutors = tutors.concat(sheetTutors);
+    window.allTutors = allTutors;
+    
+    // Update hero stat
+    const statTutors = document.getElementById('stat-tutors');
+    if (statTutors) {
+        statTutors.textContent = allTutors.length;
+    }
+    
     displayTutors(allTutors);
 }
 
